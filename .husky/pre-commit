@@ -1,0 +1,9 @@
+branch=$(git branch --show-current)
+
+if [ \"\$branch\" = \"main\" ]; then
+  echo '❌ Direct commits to main are not allowed! Please use a feature branch.'
+  exit 1
+fi
+
+bun run lint
+bun run build
