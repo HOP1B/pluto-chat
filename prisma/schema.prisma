@@ -21,3 +21,8 @@ model User {
   email        String
   phone_number Int?
 }
+
+model Message {
+  id      String @id @default(nanoid())
+  message String
+}

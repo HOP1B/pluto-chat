@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useChannel } from "ably/react";
 
 const form_schema = z.object({
@@ -20,6 +20,11 @@ const form_schema = z.object({
 });
 
 const MESSAGE_SAVE_AMOUNT = 200;
+
+type Message = {
+  id: string;
+  message: string;
+};
 
 export const ChatBox = () => {
   const form = useForm<z.infer<typeof form_schema>>({
@@ -30,27 +35,37 @@ export const ChatBox = () => {
   });
 
   const [messages, setMessages]: [
-    string[],
-    Dispatch<SetStateAction<string[]>>
-  ] = useState<string[]>([]);
+    Message[],
+    Dispatch<SetStateAction<Message[]>>
+  ] = useState<Message[]>([]);
 
   const { channel /*, ably*/ } = useChannel("main-chat", (message) => {
     const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
     setMessages([...history, message.data]);
   });
 
-  const onSubmit = (values: z.infer<typeof form_schema>) => {
+  const onSubmit = async (values: z.infer<typeof form_schema>) => {
     channel.publish({ name: "chat-message", data: values.message });
+    await fetch("/api/messages", {
+      method: "POST",
+      body: JSON.stringify({
+        message: values.message,
+      }),
+    });
     form.reset();
   };
 
-  console.log(messages);
+  useEffect(() => {
+    fetch("/api/messages")
+      .then((res) => res.json())
+      .then((data) => setMessages(data));
+  }, []);
 
   return (
     <section>
       <div>
-        {messages.map((message, index) => (
-          <p key={index}>{message}</p>
+        {messages.map((message: Message, index) => (
+          <p key={index}>{message.message}</p>
         ))}
       </div>
       <Form {...form}>
