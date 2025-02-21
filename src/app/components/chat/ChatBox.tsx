@@ -8,13 +8,12 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-// import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useChannel } from "ably/react";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -33,6 +32,8 @@ type Message = {
 dayjs.extend(relativeTime);
 
 export const ChatBox = () => {
+  const [shifted, setShifted] = useState<boolean>(false);
+  const formRef = useRef(null);
   const form = useForm<z.infer<typeof form_schema>>({
     resolver: zodResolver(form_schema),
     defaultValues: {
@@ -44,6 +45,14 @@ export const ChatBox = () => {
     Message[],
     Dispatch<SetStateAction<Message[]>>
   ] = useState<Message[]>([]);
+
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const { channel /*, ably*/ } = useChannel("main-chat", (message) => {
     const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
@@ -67,18 +76,23 @@ export const ChatBox = () => {
       .then((data) => setMessages(data));
   }, []);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
-    <section>
-      <ul>
+    <div className="h-screen flex flex-col">
+      <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message: Message) => (
           <li key={message.id} className="flex">
-            <span className="flex-grow">{message.message}</span>
+            <span className="flex-grow whitsp">{message.message}</span>
             <span>{dayjs().from(message.createdAt)}</span>
           </li>
         ))}
+        <div className="guesswhythisisused" ref={messagesEndRef}></div>
       </ul>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form ref={formRef} onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="message"
@@ -86,12 +100,21 @@ export const ChatBox = () => {
               <FormItem>
                 <FormLabel>Message</FormLabel>
                 <FormControl>
-                  {/* <Textarea
-                    placeholder="Message goes here"
-                    className="resize-none"
-                    {...field}
-                  /> */}
-                  <Input
+                  <Textarea
+                    onKeyDown={(e) => {
+                      const isShiftKey = e.key === "Shift";
+                      if (isShiftKey) {
+                        setShifted(true);
+                      }
+                      if (e.key === "Enter" && !shifted) {
+                        onSubmit(form.getValues());
+                      }
+                    }}
+                    onKeyUp={(e) => {
+                      if (e.key === "Shift") {
+                        setShifted(false);
+                      }
+                    }}
                     placeholder="Message goes here"
                     className="resize-none"
                     {...field}
@@ -104,6 +127,6 @@ export const ChatBox = () => {
           <Button type="submit">Send</Button>
         </form>
       </Form>
-    </section>
+    </div>
   );
 };
