@@ -16,4 +16,5 @@ datasource db {
 model Message {
   id      String @id @default(nanoid())
   message String
+  createdAt DateTime @default(now())
 }
