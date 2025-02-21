@@ -10,9 +10,8 @@ const Chat = dynamic(
 
 export default function Home() {
   return (
-    <main>
-      <div>hi lol</div>
+    <div>
       <Chat></Chat>
-    </main>
+    </div>
   );
 }
