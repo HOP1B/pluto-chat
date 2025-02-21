@@ -21,6 +21,7 @@
     "@prisma/client": "^6.4.0",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.2",
+    "@uiw/react-md-editor": "^4.0.5",
     "ably": "^2.6.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
