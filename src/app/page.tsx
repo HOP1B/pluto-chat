@@ -1,5 +1,9 @@
+"use client";
+
+import { useAuth } from "@clerk/nextjs";
+
 export default function Home() {
-  return (
-    <div>hi lol</div>
-  );
+  const { userId } = useAuth();
+  console.log(userId);
+  return <div>hi lol</div>;
 }

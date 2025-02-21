@@ -1,4 +1,12 @@
 import "./globals.css";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 export default function RootLayout({
   children,
@@ -6,8 +14,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <header>
+          <SignedOut>
+            <SignInButton></SignInButton>
+            <SignUpButton></SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton></UserButton>
+          </SignedIn>
+        </header>
+        <body className={`antialiased`}>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }
