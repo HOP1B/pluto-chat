@@ -16,6 +16,7 @@ import { useChannel } from "ably/react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import MDEDitor from "@uiw/react-md-editor";
 
 const form_schema = z.object({
   message: z.string().trim().min(1),
@@ -85,7 +86,12 @@ export const ChatBox = () => {
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message: Message) => (
           <li key={message.id} className="flex">
-            <span className="flex-grow whitsp">{message.message}</span>
+            {/* <span className="flex-grow whitsp">{message.message}</span> */}
+            <MDEDitor.Markdown
+              
+              source={message.message}
+              className="whitespace-pre-wrap flex-grow"
+            />
             <span>{dayjs().from(message.createdAt)}</span>
           </li>
         ))}
