@@ -29,6 +29,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jose": "^6.0.10",
+    "dayjs": "^1.11.13",
     "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "react": "^19.0.0",
