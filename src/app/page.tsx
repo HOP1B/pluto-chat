@@ -1,9 +1,15 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
+import { TrippyBackground } from "./components/Common/TrippyBackground";
 
 export default function Home() {
   const { userId } = useAuth();
-  console.log(userId);
-  return <div>hi lol</div>;
+  return (
+    <div>
+      <p>hi lol</p>
+      <p>{userId}</p>
+      <TrippyBackground></TrippyBackground>
+    </div>
+  );
 }
