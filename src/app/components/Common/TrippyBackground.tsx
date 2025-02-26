@@ -167,6 +167,7 @@ export const TrippyBackground = () => {
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     requestAnimationFrame(render);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
