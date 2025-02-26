@@ -1,8 +1,17 @@
 /**
- * Password validation
+ * Checks if the given string isn't voilating any of the password rules
  * ! ADD A TRY CATCH BLOCK IF USING
  * * Throw's an error when it's an invalid password and use the sent error.
- * @param password string
+ * @param password A string to be checked
+ * 
+ * @example
+ * ```typescript
+ * try {
+ *   validatePassword(password);
+ * } catch(err) {
+ *   console.log(GetErrorMessage(err));
+ * }
+ * ```
  */
 export function validatePassword(password: string) {
   if (password.length < 8) {
@@ -18,22 +27,23 @@ export function validatePassword(password: string) {
 
 const EMAILREGEX =
   /^[A-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-z0-9](?:[A-z0-9-]*[A-z0-9])?\.)+[A-z0-9](?:[A-z0-9-]*[A-z0-9])?$/;
-
 /**
  * Check's whether a given string is a valid email
- * @param email string
- * @returns bool
+ * I think I ripped this from ripexpr (?)
+ * @param email A string that is either an email or not
+ * @returns Whether the given string is an email or not
  */
-export function checkIfEmail(email: string) {
+export function checkIfEmail(email: string): boolean {
   return EMAILREGEX.test(email);
 }
 
 const PHONEREGEX = /^\d{8}$/g;
 /**
  * Check's whether a given string is a valid phone number
- * @param pnum string
- * @returns bool
+ * Currently it only checks if there is a 8 consecutive digits
+ * @param pnum A string that maybe is an phone number
+ * @returns Whether the string is a phone number or not
  */
-export function checkIfPhone(pnum: string) {
+export function checkIfPhone(pnum: string): boolean {
   return PHONEREGEX.test(pnum);
 }
