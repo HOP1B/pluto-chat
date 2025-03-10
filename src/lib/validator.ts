@@ -3,7 +3,7 @@
  * ! ADD A TRY CATCH BLOCK IF USING
  * * Throw's an error when it's an invalid password and use the sent error.
  * @param password A string to be checked
- * 
+ *
  * @example
  * ```typescript
  * try {
@@ -46,4 +46,17 @@ const PHONEREGEX = /^\d{8}$/g;
  */
 export function checkIfPhone(pnum: string): boolean {
   return PHONEREGEX.test(pnum);
+}
+
+const USERNAMEREGEX = /^([A-z]|[0-9]|_|\.){3,20}$/g;
+/**
+ * Check's whether a given string is a valid username.
+ * Rules:
+ * - Username must be between 3 to 20
+ * - Only letters (a -> z and A -> Z), numbers (0 -> 9), underscores (_) and periods (.)
+ * @param username The username that is checked
+ * @returns Whether the username is valid or not
+ */
+export function checkIfValidUsername(username: string): boolean {
+  return USERNAMEREGEX.test(username);
 }

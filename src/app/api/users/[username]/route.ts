@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
 /**
- * Get all users without private info
+ * Get's a single user without private info
  * @returns res
  *
  * @example
@@ -18,19 +18,22 @@ const prisma = new PrismaClient();
  * }
  *
  * // code 200
- * [
- *   {
- *     "username": "vfsjknnfkvjnkf",
- *     "displayName": "vfsjknnfkvjnkf",
- *     "id": "vfsjknnfkvjnkf",
- *     "credential": "vfsjknnfkvjnkf"
- *   }
- * ]
+ * {
+ *   "username": "vfsjknnfkvjnkf",
+ *   "displayName": "vfsjknnfkvjnkf",
+ *   "id": "vfsjknnfkvjnkf",
+ *   "credential": "vfsjknnfkvjnkf"
+ * }
  * ```
  */
-export const GET = async () => {
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ username: string }> }
+) => {
+  const { username } = await params;
   try {
-    const users = await prisma.user.findMany({
+    const user = await prisma.user.findFirst({
+      where: { username },
       select: {
         id: true,
         username: true,
@@ -40,7 +43,7 @@ export const GET = async () => {
         phone_number: true,
       },
     });
-    return NextResponse.json(users, { status: 200 });
+    return NextResponse.json(user, { status: 200 });
   } catch {
     // i guess the server db went down or smth i dunno
     return NextResponse.json(

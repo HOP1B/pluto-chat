@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { checkIfPhone } from "@/lib/validator";
 
 const prisma = new PrismaClient();
 
@@ -47,13 +48,22 @@ export const POST = async (req: NextRequest): Promise<NextResponse> => {
   const { logininfo, password }: { logininfo: string; password: string } =
     await req.json();
 
+  const credsQuery: {
+    email?: string;
+    phone_number?: number;
+  } = {}; // either has email with string or phone_number with number
+
+  if (checkIfPhone(logininfo)) {
+    credsQuery.phone_number = Number(logininfo);
+  } else {
+    credsQuery.email = logininfo;
+  }
+
   // Get user
   const user = await prisma.user.findFirst({
     where: {
       OR: [
-        {
-          credential: logininfo,
-        },
+        credsQuery,
         {
           username: logininfo,
         },

@@ -17,7 +17,7 @@ const prisma = new PrismaClient();
  * {
  *   "username": "pug",
  *   "password": "icl ts pmo rn 💔 ru fr rn🪫 u nt shkspr br 🥀",
- *   "credential": "neon@white.🪬"
+ *   "email": "neon@white.🪬"
  * }
  *
  * // code 400
@@ -43,7 +43,7 @@ const prisma = new PrismaClient();
  * ```
  */
 export const POST = async (req: NextRequest) => {
-  const { username, password, credential } = await req.json(); // Get the info
+  const { username, password, email } = await req.json(); // Get the info
 
   // Check if user already exists
   try {
@@ -72,7 +72,7 @@ export const POST = async (req: NextRequest) => {
   }
 
   // Check if the credentials are correct
-  if (!checkIfEmail(credential) && !checkIfPhone(credential)) {
+  if (!checkIfEmail(email) && !checkIfPhone(email)) {
     return NextResponse.json(
       { message: "Invalid credentials" },
       { status: 400 }
@@ -94,7 +94,7 @@ export const POST = async (req: NextRequest) => {
     const user = await prisma.user.create({
       data: {
         username,
-        credential,
+        email,
         password: passhash,
         displayName: username,
       },
