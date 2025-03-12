@@ -23,16 +23,22 @@ import axios from "axios";
 import { checkIfValidUsername } from "@/lib/validator";
 
 // Imports
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "@/app/context/user-context";
 
 /**
  * Returns a bool depending on the username avaivability
  * @param username Username to be checked
+ * @param accessToken well it's the access token, what else am I supposed to say?
  * @returns Whether the username is already taken or not
  */
-const CheckUsernameAvaivability = async (username: string) => {
+const CheckUsernameAvaivability = async (username: string, accessToken: string) => {
   const user = await axios
-    .get("/api/users/" + username)
+    .get("/api/users/" + username, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
     .then((response) => response.data)
     .catch((err) => {
       alert(err);
@@ -69,6 +75,8 @@ export default function Page() {
     },
   });
 
+  const { accessToken } = useContext(UserContext);
+
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     if (creating) return; // If already requested, don't proceed
     setCreating(true);
@@ -99,7 +107,7 @@ export default function Page() {
     const delay = setTimeout(async () => {
       if (!checkIfValidUsername(username)) return;
 
-      const avaivable = CheckUsernameAvaivability(username);
+      const avaivable = CheckUsernameAvaivability(username, accessToken);
 
       if (!avaivable) {
         setError("username", {
@@ -112,7 +120,7 @@ export default function Page() {
     }, 1500);
 
     return () => clearTimeout(delay);
-  }, [username, setError, clearErrors]);
+  }, [username, setError, clearErrors, accessToken]);
   return (
     <main>
       <Form {...form}>
