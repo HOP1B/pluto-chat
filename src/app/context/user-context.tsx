@@ -20,6 +20,7 @@ export const UserContext = createContext<UserContextType>({
   setAccessToken: () => {}, // yeah it does absolutely nothing lol
 });
 
+// We DO NOT want this context to work on these routes
 const FORBIDDENPATHS = ["/auth/login", "/auth/register"];
 
 /**
@@ -54,30 +55,36 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     setAccessToken(token || "");
   }, []);
 
+  // Do this every time you load in (change route's)
   useEffect(() => {
     if (accessToken === "") {
       if (
         localStorage.getItem("accessToken") === "" &&
         !FORBIDDENPATHS.includes(path)
       ) {
+        // So uhh if there is like really nothing just change the route
         redirect("/auth/login");
       }
       return;
     }
+    // If there is a token set it.
     localStorage.setItem("accessToken", accessToken);
+
+    // And request a token validation
     axios
       .get("/api/auth/me", {
         headers: { Authorization: "Bearer " + accessToken },
       })
       .then((res) => {
+        // If nothing went wrong do set user and change path
         setUser(res.data);
-      })
-      .then(() => {
         if (FORBIDDENPATHS.includes(path)) {
           router.push("/");
         }
       })
       .catch(() => {
+        // BUT OH NO WRONG ACCESS TOKEN
+        // yeah fire it gng
         setAccessToken("");
         setUser(null);
         redirect("/auth/login");

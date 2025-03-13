@@ -2,29 +2,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 /**
- * jngjfsjafdjo\
- * i wanna go home
- * im tired and i think i did good for the day
- * TODO: Add docs for the added stuff
+ * This function chech's whether the given path (route) is in the EXCLUDED_ROUTES or EXCLUDED_DYNAMIC_ROUTES
  * @param url URL to be checked
- * @returns Whether it's not in the excluded routes
+ * @returns Whether it's in the excluded routes
  */
-const CheckIfNotInExcludedPaths = (url: string) => {
+const CheckIfInExcludedPaths = (url: string) => {
+  // Check if it's a normal url.
   if (EXCLUDED_ROUTES.includes(url)) {
-    return true;
+    return true; // if yes return true
   } else {
-    for (const i in EXCLUDED_DYNAMIC_ROUTES) {
-      if (url.startsWith(i)) return false;
+    // Loop over every excluded dynamic paths
+    for (const route of EXCLUDED_DYNAMIC_ROUTES) {
+      // Check if the url starts with the dynamic route
+      if (url.startsWith(route)) return true;
     }
   }
-  return true;
+  return false;
 };
 
 export async function middleware(req: NextRequest) {
-  if (CheckIfNotInExcludedPaths(req.nextUrl.pathname))
-    return NextResponse.next();
+  // Check if the path is excluded. If yes just skip
+  if (CheckIfInExcludedPaths(req.nextUrl.pathname)) return NextResponse.next();
 
+  // Get full token from header
   const fullToken = req.headers.get("Authorization");
+  // If not bearer just pass
   if (!fullToken || !fullToken.startsWith("Bearer ")) {
     return NextResponse.json(
       { message: "Bad authorization headers" },
@@ -37,6 +39,7 @@ export async function middleware(req: NextRequest) {
 
   // Get secret from env
   const JWT_SECRET = process.env.JWT_SECRET;
+  // Stop if there is no JWT_SECRET
   if (!JWT_SECRET) {
     console.log(
       "JWT secret missing. Please set JWT_SECRET in your environment."
@@ -46,8 +49,11 @@ export async function middleware(req: NextRequest) {
       { status: 500 }
     );
   }
+
+  // i dunno why but turn the string into bits (maybe so jose could read it?)
   const secret = new TextEncoder().encode(JWT_SECRET);
 
+  // Check the token and voila!
   try {
     const { payload } = await jwtVerify(token, secret);
     const response = NextResponse.next();
@@ -66,6 +72,7 @@ const EXCLUDED_ROUTES = [
   "/api/auth/register",
   "/api/users",
 ];
+
 // Dynamic routes to be excluded
 // e.g /api/users. Why? There are routes like /api/users/testuser1, /api/users/gffgobsro so it's not ideal to put all the usernames isn't it?
 const EXCLUDED_DYNAMIC_ROUTES = ["/api/users"];

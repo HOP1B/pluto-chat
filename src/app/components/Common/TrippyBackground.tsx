@@ -1,3 +1,19 @@
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * Honestly don't even look at this.
+ * It's just buns
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 import { useEffect, useRef } from "react";
 
 const vertexShaderSource = `
