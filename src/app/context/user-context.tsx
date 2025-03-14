@@ -59,9 +59,10 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (accessToken === "") {
       if (
-        localStorage.getItem("accessToken") === "" &&
+        !localStorage.getItem("accessToken") &&
         !FORBIDDENPATHS.includes(path)
       ) {
+        console.log("Move or smth???");
         // So uhh if there is like really nothing just change the route
         redirect("/auth/login");
       }

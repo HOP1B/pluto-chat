@@ -71,6 +71,7 @@ const EXCLUDED_ROUTES = [
   "/api/auth/login",
   "/api/auth/register",
   "/api/users",
+  "/api/ably",
 ];
 
 // Dynamic routes to be excluded

@@ -11,11 +11,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useChannel } from "ably/react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Message } from "@prisma/client";
+import { useContext } from "react";
+import { UserContext } from "@/app/context/user-context";
 
 // import markdownit from "markdown-it";
 
@@ -25,6 +28,7 @@ import "./chat.css";
 
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
+import axios from "axios";
 
 const md = markdownit({
   html: false,
@@ -54,12 +58,6 @@ const form_schema = z.object({
 
 const MESSAGE_SAVE_AMOUNT = 200;
 
-type Message = {
-  id: string;
-  message: string;
-  createdAt: Date;
-};
-
 dayjs.extend(relativeTime);
 
 export const ChatBox = () => {
@@ -72,12 +70,11 @@ export const ChatBox = () => {
     },
   });
 
-  const [messages, setMessages]: [
-    Message[],
-    Dispatch<SetStateAction<Message[]>>
-  ] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const { accessToken } = useContext(UserContext);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -92,20 +89,35 @@ export const ChatBox = () => {
 
   const onSubmit = async (values: z.infer<typeof form_schema>) => {
     form.reset();
-    const message: Message = await fetch("/api/messages", {
-      method: "POST",
-      body: JSON.stringify({
+    // const message: Message = await fetch("/api/messages", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     message: values.message,
+    //   }),
+    // }).then((res) => res.json());
+    const message: Message = await axios.post(
+      "/api/messages",
+      {
         message: values.message,
-      }),
-    }).then((res) => res.json());
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      }
+    );
     channel.publish({ name: "chat-message", data: message });
   };
 
   useEffect(() => {
-    fetch("/api/messages")
+    fetch("/api/messages", {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setMessages(data));
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     scrollToBottom();
@@ -114,7 +126,7 @@ export const ChatBox = () => {
   return (
     <div className="h-screen flex flex-col">
       <ul className="flex-grow overflow-scroll scroll-smooth">
-        {messages.map((message: Message) => (
+        {messages.map((message) => (
           <li key={message.id} className="flex">
             {/* <span className="flex-grow whitsp">{message.message}</span> */}
             <div className="flex-grow">
@@ -122,7 +134,10 @@ export const ChatBox = () => {
                 className="chat"
                 dangerouslySetInnerHTML={{ __html: md.render(message.message) }}
               ></div>
-              {/* <ReactMarkdown>{message.message}</ReactMarkdown> */}
+              {/* {console.log(md.render(message.message))}
+              <button onClick={() => {
+                console.log(typeof md.render(message.message))
+              }}>help?</button> */}
             </div>
             <span>{dayjs().from(message.createdAt)}</span>
           </li>
