@@ -16,7 +16,37 @@ import { useChannel } from "ably/react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import ReactMarkdown from "react-markdown";
+
+// import markdownit from "markdown-it";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const markdownit = require("markdown-it");
+import "./chat.css";
+
+import hljs from "highlight.js";
+import "highlight.js/styles/github-dark.css";
+
+const md = markdownit({
+  html: false,
+  xhtmlOut: true,
+  breaks: true,
+  linkify: true,
+
+  typographer: false,
+  highlight: (str: string, lang: string) => {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return (
+          `<pre><code class="hljs">` +
+          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+          "</code></pre>"
+        );
+      } catch {}
+    }
+
+    return "";
+  },
+});
 
 const form_schema = z.object({
   message: z.string().trim().min(1),
@@ -88,7 +118,11 @@ export const ChatBox = () => {
           <li key={message.id} className="flex">
             {/* <span className="flex-grow whitsp">{message.message}</span> */}
             <div className="flex-grow">
-            <ReactMarkdown>{message.message}</ReactMarkdown>
+              <div
+                className="chat"
+                dangerouslySetInnerHTML={{ __html: md.render(message.message) }}
+              ></div>
+              {/* <ReactMarkdown>{message.message}</ReactMarkdown> */}
             </div>
             <span>{dayjs().from(message.createdAt)}</span>
           </li>
