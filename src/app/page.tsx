@@ -25,9 +25,7 @@ export default function Home() {
       </ChannelProvider>
       </AblyProvider>
       <div>hi lol</div> */}
-      <div>
-        <Chat></Chat>
-      </div>
+      <Chat></Chat>
     </main>
   );
 }

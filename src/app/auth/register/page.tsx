@@ -25,6 +25,7 @@ import { checkIfValidUsername } from "@/lib/validator";
 // Imports
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/app/context/user-context";
+import Link from "next/link";
 
 /**
  * Returns a bool depending on the username avaivability
@@ -32,7 +33,10 @@ import { UserContext } from "@/app/context/user-context";
  * @param accessToken well it's the access token, what else am I supposed to say?
  * @returns Whether the username is already taken or not
  */
-const CheckUsernameAvaivability = async (username: string, accessToken: string) => {
+const CheckUsernameAvaivability = async (
+  username: string,
+  accessToken: string
+) => {
   const user = await axios
     .get("/api/users/" + username, {
       headers: {
@@ -123,6 +127,10 @@ export default function Page() {
   }, [username, setError, clearErrors, accessToken]);
   return (
     <main>
+      <Link href="/auth/login">
+        Already have an account? Then what are you waiting for? Sell us your
+        soul
+      </Link>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField

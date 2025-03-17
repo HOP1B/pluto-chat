@@ -22,6 +22,7 @@ import axios from "axios";
 // Imports
 import { useContext, useState } from "react";
 import { UserContext } from "@/app/context/user-context";
+import Link from "next/link";
 
 const FormSchema = z.object({
   logininfo: z.string(),
@@ -61,6 +62,9 @@ export default function Page() {
 
   return (
     <main>
+      <Link href="/auth/register">
+        Boohoo, no account? Then create one so we could steal your data \j
+      </Link>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
