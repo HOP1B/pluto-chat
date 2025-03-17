@@ -95,28 +95,30 @@ export const ChatBox = () => {
     //     message: values.message,
     //   }),
     // }).then((res) => res.json());
-    const message: Message = await axios.post(
-      "/api/messages",
-      {
-        message: values.message,
-      },
-      {
-        headers: {
-          Authorization: "Bearer " + accessToken,
+    const message: Message = await axios
+      .post(
+        "/api/messages",
+        {
+          message: values.message,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        }
+      )
+      .then((data) => data.data);
     channel.publish({ name: "chat-message", data: message });
   };
 
   useEffect(() => {
-    fetch("/api/messages", {
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setMessages(data));
+    axios
+      .get("/api/messages", {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .then((data) => setMessages(data.data));
   }, [accessToken]);
 
   useEffect(() => {
@@ -128,16 +130,11 @@ export const ChatBox = () => {
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message) => (
           <li key={message.id} className="flex">
-            {/* <span className="flex-grow whitsp">{message.message}</span> */}
             <div className="flex-grow">
               <div
                 className="chat"
                 dangerouslySetInnerHTML={{ __html: md.render(message.message) }}
               ></div>
-              {/* {console.log(md.render(message.message))}
-              <button onClick={() => {
-                console.log(typeof md.render(message.message))
-              }}>help?</button> */}
             </div>
             <span>{dayjs().from(message.createdAt)}</span>
           </li>
