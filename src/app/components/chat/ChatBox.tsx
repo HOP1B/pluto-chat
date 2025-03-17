@@ -16,7 +16,7 @@ import { useChannel } from "ably/react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Message } from "@prisma/client";
+import type { Message } from "@prisma/client";
 import { useContext } from "react";
 import { UserContext } from "@/app/context/user-context";
 
@@ -28,7 +28,7 @@ import "./chat.css";
 
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const md = markdownit({
   html: false,
@@ -60,6 +60,13 @@ const MESSAGE_SAVE_AMOUNT = 200;
 
 dayjs.extend(relativeTime);
 
+type Messenger = {
+  messenger: {
+    username: string;
+    displayName: string;
+  };
+};
+
 export const ChatBox = () => {
   const [shifted, setShifted] = useState<boolean>(false);
   const formRef = useRef(null);
@@ -70,7 +77,7 @@ export const ChatBox = () => {
     },
   });
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<(Message & Messenger)[]>([]);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -118,7 +125,9 @@ export const ChatBox = () => {
           Authorization: "Bearer " + accessToken,
         },
       })
-      .then((data) => setMessages(data.data));
+      .then((data: AxiosResponse<(Message & Messenger)[]>) =>
+        setMessages(data.data)
+      );
   }, [accessToken]);
 
   useEffect(() => {
@@ -129,14 +138,24 @@ export const ChatBox = () => {
     <div className="h-screen flex flex-col">
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message) => (
-          <li key={message.id} className="flex">
-            <div className="flex-grow">
-              <div
-                className="chat"
-                dangerouslySetInnerHTML={{ __html: md.render(message.message) }}
-              ></div>
+          <li key={message.id}>
+            <div className="flex flex-col">
+              <div className="w-full text-xs">
+                {message.messenger.displayName}{" "}
+                <span className="font-light">{message.messenger.username}</span>
+              </div>
+              <div className="w-full flex">
+                <div className="flex flex-grow flex-col">
+                  <div
+                    className="chat"
+                    dangerouslySetInnerHTML={{
+                      __html: md.render(message.message),
+                    }}
+                  ></div>
+                </div>
+                <span>{dayjs().from(message.createdAt)}</span>
+              </div>
             </div>
-            <span>{dayjs().from(message.createdAt)}</span>
           </li>
         ))}
         <div className="guesswhythisisused" ref={messagesEndRef}></div>

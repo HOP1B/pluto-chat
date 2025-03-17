@@ -14,16 +14,19 @@ datasource db {
 }
 
 model User {
-  id           String @id @default(nanoid())
-  username     String @unique
+  id           String    @id @default(nanoid())
+  username     String    @unique
   displayName  String
   password     String
   email        String
   phone_number Int?
+  messages     Message[] @relation("UserMessages")
 }
 
 model Message {
-  id      String @id @default(nanoid())
-  message String
+  id        String   @id @default(nanoid())
+  message   String
+  userId    String
+  messenger User     @relation(fields: [userId], references: [id], name: "UserMessages")
   createdAt DateTime @default(now())
 }
