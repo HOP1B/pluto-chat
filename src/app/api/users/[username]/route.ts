@@ -37,10 +37,9 @@ export const GET = async (
       select: {
         id: true,
         username: true,
-        password: false,
         displayName: true,
-        email: true,
-        phone_number: true,
+        friends: true,
+        // friendOf: true,
       },
     });
     return NextResponse.json(user, { status: 200 });

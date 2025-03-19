@@ -34,10 +34,8 @@ export const GET = async () => {
       select: {
         id: true,
         username: true,
-        password: false,
         displayName: true,
-        email: true,
-        phone_number: true,
+        friends: true,
       },
     });
     return NextResponse.json(users, { status: 200 });
