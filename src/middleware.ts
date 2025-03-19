@@ -57,7 +57,7 @@ export async function middleware(req: NextRequest) {
   try {
     const { payload } = await jwtVerify(token, secret);
     const response = NextResponse.next();
-    response.headers.set("_user", JSON.stringify(payload));
+    response.headers.set("_user", JSON.stringify(payload.user));
     return response;
   } catch {
     return NextResponse.json({ message: "Invalid Token" }, { status: 401 });
