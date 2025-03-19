@@ -23,6 +23,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { UserContext } from "@/app/context/user-context";
 import Link from "next/link";
+import { TrippyBackground } from "@/app/components/Common/TrippyBackground";
 
 const FormSchema = z.object({
   logininfo: z.string(),
@@ -61,10 +62,16 @@ export default function Page() {
   };
 
   return (
-    <main>
-      <Link href="/auth/register">
-        Boohoo, no account? Then create one so we could steal your data \j
+    <main className="flex items-center justify-center h-screen text-black">
+      <div className=" w-[1024px] h-[540px] bg-transparent p-4 border border-gray-300 rounded-2xl flex items-center justify-center">
+      <div className=" w-[540px] h-[540px] p-10 bg-black rounded  ">
+        <TrippyBackground></TrippyBackground>
+      </div>
+      <div className=" w-[540px] h-[540px] p-10 ">
+      <Link href="/auth/register" className="text-4xl">
+        Welcome back!
       </Link>
+      <p>Doesn&apos;t have an account</p>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -72,11 +79,11 @@ export default function Page() {
             name="logininfo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Credentials</FormLabel>
+                <FormLabel></FormLabel>
                 <FormControl>
-                  <Input placeholder="Yharim24XxxY" {...field} />
+                  <Input placeholder="Enter Email or Phone number"{...field} />
                 </FormControl>
-                <FormDescription>Here goes your credentials</FormDescription>
+                <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -86,18 +93,20 @@ export default function Page() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel></FormLabel>
                 <FormControl>
-                  <Input placeholder="********" type="password" {...field} />
+                  <Input placeholder="Enter Password" type="password" {...field} />
                 </FormControl>
-                <FormDescription>This is your password</FormDescription>
+                <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {!loading ? <Button type="submit">Submit</Button> : <p>Signing in</p>}
+          {!loading ? <Button type="submit" className=" bg-black text-white w-full ">Log in</Button> : <p className=" h-[35px] bg-black text-white flex item-center justify-center">Signing in</p>}
         </form>
       </Form>
+      </div>
+      </div>
     </main>
   );
 }
