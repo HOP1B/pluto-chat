@@ -26,6 +26,7 @@ import { checkIfValidUsername } from "@/lib/validator";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/app/context/user-context";
 import Link from "next/link";
+import { TrippyBackground } from "@/app/components/Common/TrippyBackground";
 
 /**
  * Returns a bool depending on the username avaivability
@@ -126,65 +127,78 @@ export default function Page() {
     return () => clearTimeout(delay);
   }, [username, setError, clearErrors, accessToken]);
   return (
-    <main>
+    <main className="flex min-h-screen justify-center items-center flex-col">
       <Link href="/auth/login">
         Already have an account? Then what are you waiting for? Sell us your
         soul
       </Link>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Yharim24XxxY" {...field} />
-                </FormControl>
-                <FormDescription>
-                  This is your username or in other words your @
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="********" type="password" {...field} />
-                </FormControl>
-                <FormDescription>This is your password</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="This is the part where we get your email address"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  This is the part where we get your email address
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {!creating ? <Button type="submit">Submit</Button> : <p>Creating</p>}
-        </form>
-      </Form>
+
+      <div className="flex rounded-[30px] bg-[#2F2F2F] bg-opacity-30 text-white w-[1080px]">
+
+        <div className="rounded-r-[300px]">
+          <TrippyBackground></TrippyBackground>
+        </div>
+
+
+        <div className="content-center w-[540px] ">
+          <div className="w-[356px] ">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl >                      
+                    <Input placeholder="Enter Username" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your username or in other words your @
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your password" type="password" {...field} />
+                    </FormControl>
+                    <FormDescription>This is your password</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter your Email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      This is the part where we get your email address
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {!creating ? <Button className="w-[357px] h-[34px] bg-[#2F2F2F] rounded-[5px]" type="submit">Create Account</Button> : <p>Creating</p>}
+            </form>
+          </Form>
+        </div>
+        </div>
+      </div>
     </main>
   );
 }
