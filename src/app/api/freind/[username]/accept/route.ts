@@ -26,18 +26,7 @@ export const POST = async (
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  console.log({ user, freind });
-
-  console.log({
-    req: await prisma.freindRequest.findFirst({
-      where: {
-        senderId: freind.id,
-        recieverId: user.id,
-      },
-    }),
-  });
-
-  const freindRequest = await prisma.freindRequest.delete({
+  await prisma.freindRequest.delete({
     where: {
       senderId_recieverId: {
         senderId: freind.id,
@@ -46,9 +35,7 @@ export const POST = async (
     },
   });
 
-  console.log(freindRequest);
-
-  const freindship = await prisma.friendship.createMany({
+  await prisma.friendship.createMany({
     data: [
       {
         userId: user.id,
@@ -61,16 +48,8 @@ export const POST = async (
     ],
   });
 
-  console.log({ freindRequest, freindship });
-
   return NextResponse.json(
     { message: "Successfully added freind" },
     { status: 200 }
   );
-
-  // if (!freindRequest)
-  //   return NextResponse.json(
-  //     { message: "No freind request found" },
-  //     { status: 404 }
-  //   );
 };

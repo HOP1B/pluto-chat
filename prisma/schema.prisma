@@ -32,6 +32,7 @@ model Friendship {
   @@unique([userId, freindId])
 }
 
+// ? Do we even need this?
 enum FreindRequestStatus {
   PENDING
   ACCEPTED
