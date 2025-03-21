@@ -3,6 +3,33 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+/**
+ * Route to unfriend a user
+ * @param req Client request containing headers with user info
+ * @param params Parameters containing the username of the user to unfriend
+ * @returns Response indicating the result of the operation
+ *
+ * @example
+ * // Request
+ * {
+ *   // empty request empty request empty request empty request empty request empty request
+ * }
+ *
+ * // code 500
+ * {
+ *   "message": "look im not even gonna write an error message"
+ * }
+ *
+ * // code 404
+ * {
+ *   "message": "User not found"
+ * }
+ *
+ * // code 200
+ * {
+ *   "message": "Successfully unfreinded"
+ * }
+ */
 export const DELETE = async (
   req: NextRequest,
   { params }: { params: Promise<{ username: string }> }

@@ -3,6 +3,35 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+/**
+ * Route to undo a friend request
+ * @param req Client request containing required values
+ * @param params Parameters containing the username of the friend to undo the request for
+ * @returns Response indicating the result of the operation
+ *
+ * @example
+ * ```json
+ * // Request
+ * {
+ *   // Empty. Just plain emptiness.
+ * }
+ *
+ * // code 404
+ * {
+ *   "message": "User not found"
+ * }
+ *
+ * // code 500
+ * {
+ *   "message": "im so pmo rn"
+ * }
+ *
+ * // code 200
+ * {
+ *   "message": "Successfully unrequested 'request' (???)"
+ * }
+ * ```
+ */
 export const DELETE = async (
   req: NextRequest,
   { params }: { params: Promise<{ username: string }> }
