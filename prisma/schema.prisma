@@ -32,20 +32,12 @@ model Friendship {
   @@unique([userId, freindId])
 }
 
-// ? Do we even need this?
-enum FreindRequestStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
 model FreindRequest {
-  id         String              @id @default(nanoid())
-  sender     User                @relation("SentRequests", fields: [senderId], references: [id])
+  id         String @id @default(nanoid())
+  sender     User   @relation("SentRequests", fields: [senderId], references: [id])
   senderId   String
-  reciever   User                @relation("RecievedRequests", fields: [recieverId], references: [id])
+  reciever   User   @relation("RecievedRequests", fields: [recieverId], references: [id])
   recieverId String
-  status     FreindRequestStatus @default(PENDING)
 
   @@unique([senderId, recieverId])
 }
@@ -62,7 +54,8 @@ model User {
   phone_number Int?
 
   // Messages
-  messages Message[] @relation("UserMessages")
+  sentMessages     Message[] @relation("SentMessages")
+  recievedMessages Message[] @relation("RecievedMessages")
 
   // Friends
   friends          Friendship[]    @relation("friends")
@@ -74,7 +67,10 @@ model User {
 model Message {
   id        String   @id @default(nanoid())
   message   String
-  userId    String
-  messenger User     @relation(fields: [userId], references: [id], name: "UserMessages")
   createdAt DateTime @default(now())
+
+  messengerId String
+  messenger   User   @relation(fields: [messengerId], references: [id], name: "SentMessages")
+  recieverId  String
+  reciever    User   @relation(fields: [recieverId], references: [id], name: "RecievedMessages")
 }
