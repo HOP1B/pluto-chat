@@ -62,16 +62,17 @@ export default function Page() {
   };
 
   return (
-    <main className="flex items-center justify-center h-screen text-black">
-      <div className=" w-[1024px] h-[540px] bg-transparent p-4 border border-gray-300 rounded-2xl flex items-center justify-center">
-      <div className=" w-[540px] h-[540px] p-10 bg-black rounded  ">
+    <main className="flex items-center justify-center w-screen h-screen bg-cover bg-center text-black bg-[url('/background.login.jpg')]">
+      <div className=" w-[1024px] h-[540px] bg-black bg-opacity-50 text-white p-4 border border-gray-300 rounded-2xl flex items-center justify-center">
+      <div className=" w-[540px] h-[540px] p-10">
         <TrippyBackground></TrippyBackground>
+        <button type="submit" className="w-[50px] h-[2px] border relative left-[180px] "></button>
       </div>
-      <div className=" w-[540px] h-[540px] p-10 ">
-      <Link href="/auth/register" className="text-4xl">
+      <div className=" w-[540px] h-[540px] p-10 flex-row content-around items-center justify-center ">
+      <p className="text-4xl">
         Welcome back!
-      </Link>
-      <p>Doesn&apos;t have an account</p>
+      </p>
+      <Link href="/auth/register" className="text-gray-300">Doesn&apos;t have an account</Link>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -79,9 +80,9 @@ export default function Page() {
             name="logininfo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel></FormLabel>
+                <FormLabel>Email or Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Email or Phone number"{...field} />
+                  <Input className="text-gray-200 rounded-xl" placeholder="Enter Email or Username"{...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
@@ -93,16 +94,16 @@ export default function Page() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel></FormLabel>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Password" type="password" {...field} />
+                  <Input className="text-gray-200 rounded-xl" placeholder="Enter Password" type="password" {...field} />
                 </FormControl>
                 <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {!loading ? <Button type="submit" className=" bg-black text-white w-full ">Log in</Button> : <p className=" h-[35px] bg-black text-white flex item-center justify-center">Signing in</p>}
+          {!loading ? <Button type="submit" className=" bg-gray-500 text-white w-full rounded-xl ">Log in</Button> :<p>...</p>}
         </form>
       </Form>
       </div>

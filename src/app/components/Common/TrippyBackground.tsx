@@ -191,7 +191,7 @@ export const TrippyBackground = () => {
       ref={canvasRef}
       width="600"
       height="900"
-      className="w-full h-full"
+      className="w-full h-full rounded-2xl"
     ></canvas>
   );
 };
