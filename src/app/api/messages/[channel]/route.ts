@@ -1,13 +1,25 @@
 import { PrismaClient, User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import Ably from "ably";
 
 const prisma = new PrismaClient();
+const ably = new Ably.Realtime({ authUrl: "/api/ably" });
 
 export const GET = async (
   req: NextRequest,
   { params }: { params: Promise<{ channel: string }> }
 ) => {
   const users = (await params).channel.split("~").sort();
+  const requesterHeader = req.headers.get("_user");
+  if (!requesterHeader)
+    return NextResponse.json(
+      { message: "I can't describe my pain" },
+      { status: 500 }
+    );
+  const requester: User = JSON.parse(requesterHeader);
+  if (requester.id !== users[0] && requester.id !== users[1]) {
+    return NextResponse.json({ message: "Oh no you wont :)" }, { status: 400 });
+  }
   try {
     const messages = await prisma.message.findMany({
       where: {
@@ -72,8 +84,6 @@ export const POST = async (
     return NextResponse.json({ message: "nice try lil bro" }, { status: 400 });
   }
 
-  console.log({ user: user.id, receiver, message });
-
   const createdMessage = await prisma.message.create({
     data: {
       messenger: { connect: { id: user.id } },
@@ -84,5 +94,10 @@ export const POST = async (
     //   messenger: true,
     // },
   });
+
+  const channelId = users.join("~");
+  const channel = ably.channels.get(channelId);
+  console.log(channelId, channel);
+  channel.publish("message", createdMessage);
   return NextResponse.json(createdMessage, { status: 200 });
 };

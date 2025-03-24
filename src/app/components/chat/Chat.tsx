@@ -3,19 +3,25 @@
 import * as Ably from "ably";
 import { AblyProvider, ChannelProvider } from "ably/react";
 import { ChatBox } from "./ChatBox";
+import { useEffect } from "react";
 
 type ChatBoxProps = {
-  chatId: string; // The freindship id for dms
+  channel: string; // The freindship id for dms
 };
 
 export const Chat = (props: ChatBoxProps) => {
   const client = new Ably.Realtime({ authUrl: "/api/ably" });
 
-  console.log(props);
+  useEffect(() => {
+    return () => {
+      client.close();
+    };
+  }, []);
+
   return (
     <AblyProvider client={client}>
-      <ChannelProvider channelName="public-global">
-        <ChatBox></ChatBox>
+      <ChannelProvider channelName={props.channel}>
+        <ChatBox channel={props.channel}></ChatBox>
       </ChannelProvider>
     </AblyProvider>
   );

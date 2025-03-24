@@ -7,14 +7,6 @@ import { TrippyBackground } from "./components/Common/TrippyBackground";
 
 // const client = new Ably.Realtime({key: process.env.ABLY_API_KEY});
 
-import dynamic from "next/dynamic";
-const Chat = dynamic(
-  () => import("./components/chat/Chat").then((mod) => mod.Chat),
-  {
-    ssr: false,
-  }
-);
-
 export default function Home() {
   return (
     <main>
@@ -25,7 +17,6 @@ export default function Home() {
       </ChannelProvider>
       </AblyProvider>
       <div>hi lol</div> */}
-      <Chat chatId="goonergoonergoonergoonerhahahahaahahagoonergooner"></Chat>
     </main>
   );
 }
