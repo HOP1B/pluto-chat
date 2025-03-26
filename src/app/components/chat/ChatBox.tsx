@@ -120,7 +120,7 @@ export const ChatBox = (props: ChatBoxProps) => {
       console.log({ messages, history, m: message.data });
       setMessages([...history, message.data]);
     });
-  }, [messages]);
+  }, [messages, props.channel]);
 
   useEffect(() => {
     axios
@@ -149,6 +149,7 @@ export const ChatBox = (props: ChatBoxProps) => {
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message) => (
           <li key={message.id}>
+            <button onClick={() => {console.log(message)}}>click me</button>
             <div className="flex flex-col">
               <div className="w-full text-xs">
                 {message.messenger.displayName}{" "}

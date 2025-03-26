@@ -11,13 +11,14 @@ type ChatBoxProps = {
 
 export const Chat = (props: ChatBoxProps) => {
   const client = new Ably.Realtime({
-    authUrl: "http://localhost:3000/api/ably",
+    authUrl: "/api/ably",
   });
 
   useEffect(() => {
     return () => {
       client.close();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
