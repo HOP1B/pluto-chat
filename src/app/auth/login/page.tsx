@@ -23,6 +23,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { UserContext } from "@/app/context/user-context";
 import Link from "next/link";
+import { TrippyBackground } from "@/app/components/Common/TrippyBackground";
 
 const FormSchema = z.object({
   logininfo: z.string(),
@@ -61,10 +62,17 @@ export default function Page() {
   };
 
   return (
-    <main>
-      <Link href="/auth/register">
-        Boohoo, no account? Then create one so we could steal your data \j
-      </Link>
+    <main className="flex items-center justify-center w-screen h-screen bg-cover bg-center text-black bg-[url('/background.login.jpg')]">
+      <div className=" w-[1024px] h-[540px] bg-black bg-opacity-50 text-white p-4 border border-gray-300 rounded-2xl flex items-center justify-center">
+      <div className=" w-[540px] h-[540px] p-10">
+        <TrippyBackground></TrippyBackground>
+        <button type="submit" className="w-[50px] h-[2px] border relative left-[180px] "></button>
+      </div>
+      <div className=" w-[540px] h-[540px] p-10 flex-row content-around items-center justify-center ">
+      <p className="text-5xl">
+        Welcome back!
+      </p>
+      <Link href="/auth/register" className="text-gray-300">Doesn&apos;t have an account</Link>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -72,11 +80,11 @@ export default function Page() {
             name="logininfo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Credentials</FormLabel>
+                <FormLabel>Email or Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="Yharim24XxxY" {...field} />
+                  <Input className="text-gray-200 rounded-xl" placeholder="Enter Email or Username"{...field} />
                 </FormControl>
-                <FormDescription>Here goes your credentials</FormDescription>
+                <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -88,16 +96,18 @@ export default function Page() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="********" type="password" {...field} />
+                  <Input className="text-gray-200 rounded-xl" placeholder="Enter Password" type="password" {...field} />
                 </FormControl>
-                <FormDescription>This is your password</FormDescription>
+                <FormDescription></FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {!loading ? <Button type="submit">Submit</Button> : <p>Signing in</p>}
+          {!loading ? <Button type="submit" className="cursor-pointer bg-gray-500 text-white w-full rounded-xl ">Log in</Button> :<p>...</p>}
         </form>
       </Form>
+      </div>
+      </div>
     </main>
   );
 }
