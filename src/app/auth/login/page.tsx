@@ -69,7 +69,7 @@ export default function Page() {
         <button type="submit" className="w-[50px] h-[2px] border relative left-[180px] "></button>
       </div>
       <div className=" w-[540px] h-[540px] p-10 flex-row content-around items-center justify-center ">
-      <p className="text-4xl">
+      <p className="text-5xl">
         Welcome back!
       </p>
       <Link href="/auth/register" className="text-gray-300">Doesn&apos;t have an account</Link>
@@ -103,7 +103,7 @@ export default function Page() {
               </FormItem>
             )}
           />
-          {!loading ? <Button type="submit" className=" bg-gray-500 text-white w-full rounded-xl ">Log in</Button> :<p>...</p>}
+          {!loading ? <Button type="submit" className="cursor-pointer bg-gray-500 text-white w-full rounded-xl ">Log in</Button> :<p>...</p>}
         </form>
       </Form>
       </div>

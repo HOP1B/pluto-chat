@@ -187,7 +187,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-              {!creating ? <Button className="bg-gray-500 text-white w-full rounded-xl" type="submit">Create Account</Button> : <p>...</p>}
+              {!creating ? <Button className="cursor-pointer bg-gray-500 text-white w-full rounded-xl" type="submit">Create Account</Button> : <p>...</p>}
             </form>
           </Form>
           </div>
