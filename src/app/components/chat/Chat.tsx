@@ -10,7 +10,9 @@ type ChatBoxProps = {
 };
 
 export const Chat = (props: ChatBoxProps) => {
-  const client = new Ably.Realtime({ authUrl: "/api/ably" });
+  const client = new Ably.Realtime({
+    authUrl: "http://localhost:3000/api/ably",
+  });
 
   useEffect(() => {
     return () => {

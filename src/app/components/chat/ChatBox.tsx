@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { Message } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { useContext } from "react";
 import { UserContext } from "@/app/context/user-context";
 import Ably from "ably";
@@ -61,13 +61,6 @@ const MESSAGE_SAVE_AMOUNT = 200;
 
 dayjs.extend(relativeTime);
 
-type Messenger = {
-  messenger: {
-    username: string;
-    displayName: string;
-  };
-};
-
 type ChatBoxProps = {
   channel: string;
 };
@@ -84,7 +77,9 @@ export const ChatBox = (props: ChatBoxProps) => {
     },
   });
 
-  const [messages, setMessages] = useState<(Message & Messenger)[]>([]);
+  const [messages, setMessages] = useState<
+    Prisma.MessageGetPayload<{ include: { messenger: true; reciever: true } }>[]
+  >([]);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -118,12 +113,14 @@ export const ChatBox = (props: ChatBoxProps) => {
 
   useEffect(() => {
     const channel = ably.channels.get(props.channel);
+    // ! Maybe use this
+    // channel.unsubscribe("message");
     channel.subscribe("message", (message) => {
-      console.log("helo?????");
       const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
+      console.log({ messages, history, m: message.data });
       setMessages([...history, message.data]);
     });
-  }, []);
+  }, [messages]);
 
   useEffect(() => {
     axios
@@ -132,8 +129,14 @@ export const ChatBox = (props: ChatBoxProps) => {
           Authorization: "Bearer " + accessToken,
         },
       })
-      .then((data: AxiosResponse<(Message & Messenger)[]>) =>
-        setMessages(data.data)
+      .then(
+        (
+          data: AxiosResponse<
+            Prisma.MessageGetPayload<{
+              include: { messenger: true; reciever: true };
+            }>[]
+          >
+        ) => setMessages(data.data)
       );
   }, [accessToken, props.channel]);
 

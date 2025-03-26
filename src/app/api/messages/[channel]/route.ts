@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Ably from "ably";
 
 const prisma = new PrismaClient();
-const ably = new Ably.Realtime({ authUrl: "/api/ably" });
 
 export const GET = async (
   req: NextRequest,
@@ -90,14 +89,16 @@ export const POST = async (
       reciever: { connect: { id: receiver } },
       message,
     },
-    // include: {
-    //   messenger: true,
-    // },
+    include: {
+      messenger: true,
+      reciever: true,
+    },
   });
 
+  const ably = new Ably.Realtime({ key: process.env.ABLY_API_KEY || "" });
   const channelId = users.join("~");
   const channel = ably.channels.get(channelId);
-  console.log(channelId, channel);
   channel.publish("message", createdMessage);
+
   return NextResponse.json(createdMessage, { status: 200 });
 };
