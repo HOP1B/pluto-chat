@@ -15,5 +15,6 @@ export const GET = async () => {
   const tokenRequestData = await client.auth.createTokenRequest({
     clientId: "pluto-chat",
   });
+  // console.log({ tokenRequestData });
   return NextResponse.json(tokenRequestData, { status: 200 });
 };

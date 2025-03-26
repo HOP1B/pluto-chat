@@ -13,20 +13,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model Friendship {
+//   userId   String
+//   user   User   @relation("friendOf", fields: [friendId], references: [id])
+//   friendId String
+//   friend   User   @relation("friends", fields: [friendId], references: [id])
+
+//   @@id([userId, friendId]) // Composite primary key ensures uniqueness
+// }
+
+model Friendship {
+  id       String @id @default(nanoid())
+  userId   String
+  user     User   @relation("friendOf", fields: [userId], references: [id])
+  freindId String
+  friend   User   @relation("friends", fields: [freindId], references: [id])
+
+  @@unique([userId, freindId])
+}
+
+model FreindRequest {
+  id         String @id @default(nanoid())
+  sender     User   @relation("SentRequests", fields: [senderId], references: [id])
+  senderId   String
+  reciever   User   @relation("RecievedRequests", fields: [recieverId], references: [id])
+  recieverId String
+
+  @@unique([senderId, recieverId])
+}
+
 model User {
-  id           String    @id @default(nanoid())
-  username     String    @unique
-  displayName  String
+  // Public info
+  id          String @id @default(nanoid())
+  username    String @unique
+  displayName String
+
+  // Private info
   password     String
   email        String
   phone_number Int?
-  messages     Message[] @relation("UserMessages")
+
+  // Messages
+  sentMessages     Message[] @relation("SentMessages")
+  recievedMessages Message[] @relation("RecievedMessages")
+
+  // Friends
+  friends          Friendship[]    @relation("friends")
+  friendOf         Friendship[]    @relation("friendOf")
+  sentRequests     FreindRequest[] @relation("SentRequests")
+  recievedRequests FreindRequest[] @relation("RecievedRequests")
 }
 
 model Message {
   id        String   @id @default(nanoid())
   message   String
-  userId    String
-  messenger User     @relation(fields: [userId], references: [id], name: "UserMessages")
   createdAt DateTime @default(now())
+
+  messengerId String
+  messenger   User   @relation(fields: [messengerId], references: [id], name: "SentMessages")
+  recieverId  String
+  reciever    User   @relation(fields: [recieverId], references: [id], name: "RecievedMessages")
 }

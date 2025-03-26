@@ -12,13 +12,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useRef, useState } from "react";
-import { useChannel } from "ably/react";
+// import { useChannel } from "ably/react";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { Message } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { useContext } from "react";
 import { UserContext } from "@/app/context/user-context";
+import Ably from "ably";
 
 // import markdownit from "markdown-it";
 
@@ -60,14 +61,13 @@ const MESSAGE_SAVE_AMOUNT = 200;
 
 dayjs.extend(relativeTime);
 
-type Messenger = {
-  messenger: {
-    username: string;
-    displayName: string;
-  };
+type ChatBoxProps = {
+  channel: string;
 };
 
-export const ChatBox = () => {
+const ably = new Ably.Realtime(`${process.env.ABLY_API_KEY}`);
+
+export const ChatBox = (props: ChatBoxProps) => {
   const [shifted, setShifted] = useState<boolean>(false);
   const formRef = useRef(null);
   const form = useForm<z.infer<typeof form_schema>>({
@@ -77,7 +77,9 @@ export const ChatBox = () => {
     },
   });
 
-  const [messages, setMessages] = useState<(Message & Messenger)[]>([]);
+  const [messages, setMessages] = useState<
+    Prisma.MessageGetPayload<{ include: { messenger: true; reciever: true } }>[]
+  >([]);
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -89,46 +91,54 @@ export const ChatBox = () => {
     }
   };
 
-  const { channel /*, ably*/ } = useChannel("main-chat", (message) => {
-    const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
-    setMessages([...history, message.data]);
-  });
+  // useChannel(props.channel, (message) => {
+  //   const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
+  //   setMessages([...history, message.data]);
+  // });
 
   const onSubmit = async (values: z.infer<typeof form_schema>) => {
     form.reset();
-    // const message: Message = await fetch("/api/messages", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     message: values.message,
-    //   }),
-    // }).then((res) => res.json());
-    const message: Message = await axios
-      .post(
-        "/api/messages",
-        {
-          message: values.message,
+    await axios.post(
+      `/api/messages/${props.channel}`,
+      {
+        message: values.message,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + accessToken,
         },
-        {
-          headers: {
-            Authorization: "Bearer " + accessToken,
-          },
-        }
-      )
-      .then((data) => data.data);
-    channel.publish({ name: "chat-message", data: message });
+      }
+    );
   };
 
   useEffect(() => {
+    const channel = ably.channels.get(props.channel);
+    // ! Maybe use this
+    // channel.unsubscribe("message");
+    channel.subscribe("message", (message) => {
+      const history = messages.slice(-MESSAGE_SAVE_AMOUNT);
+      console.log({ messages, history, m: message.data });
+      setMessages([...history, message.data]);
+    });
+  }, [messages, props.channel]);
+
+  useEffect(() => {
     axios
-      .get("/api/messages", {
+      .get(`/api/messages/${props.channel}`, {
         headers: {
           Authorization: "Bearer " + accessToken,
         },
       })
-      .then((data: AxiosResponse<(Message & Messenger)[]>) =>
-        setMessages(data.data)
+      .then(
+        (
+          data: AxiosResponse<
+            Prisma.MessageGetPayload<{
+              include: { messenger: true; reciever: true };
+            }>[]
+          >
+        ) => setMessages(data.data)
       );
-  }, [accessToken]);
+  }, [accessToken, props.channel]);
 
   useEffect(() => {
     scrollToBottom();
@@ -139,6 +149,7 @@ export const ChatBox = () => {
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message) => (
           <li key={message.id}>
+            <button onClick={() => {console.log(message)}}>click me</button>
             <div className="flex flex-col">
               <div className="w-full text-xs">
                 {message.messenger.displayName}{" "}
