@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const primsa = new PrismaClient();
@@ -49,7 +49,7 @@ export const POST = async (
       },
       { status: 500 }
     );
-  const user: Prisma.UserGetPayload<{ include: { sentRequests: true } }> =
+  const user: User =
     JSON.parse(user_header);
 
   // Get 'freind'
