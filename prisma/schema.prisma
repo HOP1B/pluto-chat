@@ -25,11 +25,11 @@ datasource db {
 model Friendship {
   id       String @id @default(nanoid())
   userId   String
-  user     User   @relation("friendOf", fields: [userId], references: [id])
-  freindId String
-  friend   User   @relation("friends", fields: [freindId], references: [id])
+  user     User   @relation("friends", fields: [userId], references: [id])
+  friendId String
+  friend   User   @relation("friendOf", fields: [friendId], references: [id])
 
-  @@unique([userId, freindId])
+  @@unique([userId, friendId])
 }
 
 model FreindRequest {
@@ -44,9 +44,11 @@ model FreindRequest {
 
 model User {
   // Public info
-  id          String @id @default(nanoid())
-  username    String @unique
+  id          String   @id @default(nanoid())
+  username    String   @unique
   displayName String
+  createdAt   DateTime @default(now())
+  bio         String   @default("")
 
   // Private info
   password     String
