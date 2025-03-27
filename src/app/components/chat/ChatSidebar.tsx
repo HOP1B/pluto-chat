@@ -1,14 +1,30 @@
 "use client";
 
 import { UserContext } from "@/app/context/user-context";
+import { DialogHeader } from "@/components/ui/dialog";
 import { User } from "@prisma/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export const ChatSideBar = () => {
   const { user, accessToken } = useContext(UserContext);
+  const [sentRequest, setSentRequest] = useState(false);
+
+  console.log(user);
 
   const [friends, setFriends] = useState<User[] | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (user) {
@@ -29,9 +45,72 @@ export const ChatSideBar = () => {
       {/* Sidebar Header */}
       <div className="flex justify-between items-center mb-4">
         <span className="text-lg font-semibold">Chat</span>
-        <button className="p-2 bg-neutral-700 rounded hover:bg-neutral-600">
-          +
-        </button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="p-2 bg-neutral-700 rounded hover:bg-neutral-600">
+              +
+            </button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] bg-neutral-700/100 text-white border-white rounded-xl">
+            <DialogHeader>
+              <DialogTitle>Add friend</DialogTitle>
+              <DialogDescription>
+                Find new friends so we could actually have users and not go
+                bankrupt(talking like this goin do stuff).
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const friend = (e.target as HTMLFormElement).friend.value;
+                console.log(sentRequest);
+                if (sentRequest) {
+                  axios
+                    .post(
+                      `/api/friend/${friend}/request`,
+                      {},
+                      { headers: { Authorization: `Bearer ${accessToken}` } }
+                    )
+                    .then((res) => {
+                      toast({ title: res.data.message });
+                      setSentRequest(true);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      setSentRequest(false);
+                      toast({ title: err.response.data.message });
+                    });
+                } else {
+                  axios
+                    .delete(`/api/friend/${friend}/request/undo`, {
+                      headers: { Authorization: `Bearer ${accessToken}` },
+                    })
+                    .then((res) => {
+                      toast({ title: res.data.message });
+                      setSentRequest(false);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      toast({ title: err.response.data.message });
+                    });
+                }
+              }}
+            >
+              <Label>Your new future &apos;friend&apos;s username</Label>
+              <div className="flex gap-2">
+                <Input
+                  name="friend"
+                  id="friend"
+                  placeholder="gauss, user12322346906 etc."
+                  className="text-neutral-300 border-[1.5px]"
+                />
+                <Button type="submit" variant="outline">
+                  {!sentRequest ? "Request" : "Undo"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
       {/* Contact List */}
       <div className="flex-1 overflow-y-auto space-y-2">

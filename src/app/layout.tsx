@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { UserContextProvider } from "./context/user-context";
 import "./globals.css";
 
@@ -9,7 +10,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        <UserContextProvider>{children}</UserContextProvider>
+        <UserContextProvider>
+          {children}
+          <Toaster />
+        </UserContextProvider>
       </body>
     </html>
   );
