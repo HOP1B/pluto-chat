@@ -16,12 +16,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export const ChatSideBar = () => {
   const { user, accessToken } = useContext(UserContext);
   const [sentRequest, setSentRequest] = useState(false);
-
-  console.log(user);
 
   const [friends, setFriends] = useState<User[] | null>(null);
   const { toast } = useToast();
@@ -114,23 +113,39 @@ export const ChatSideBar = () => {
       </div>
       {/* Contact List */}
       <div className="flex-1 overflow-y-auto space-y-2">
-        {friends !== null &&
-          friends.length > 0 &&
-          friends.map((user, index) => (
-            <div
-              key={index}
+        <ul>
+          <li key={"oh hey its you"}>
+            <Link
+              href={`/chat`}
               className="flex items-center space-x-2 p-2 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600"
             >
               <div className="w-10 h-10 bg-neutral-500 rounded-full flex items-center justify-center text-lg ">
                 {user.displayName.charAt(0)}
               </div>
               <span>{user.displayName}</span>
-            </div>
-          ))}
-        {friends == null && <p>Loading...</p>}
-        {friends !== null && friends.length === 0 && (
-          <p>Man you must be really 𝓯𝓻𝓮𝓪𝓴𝔂 at parties</p>
-        )}
+              {/* Despite everything, it's still you. */}
+            </Link>
+          </li>
+          {friends !== null &&
+            friends.length > 0 &&
+            friends.map((friend) => (
+              <li key={friend.id}>
+                <Link
+                  href={`/chat/${friend.id}~${user.id}`}
+                  className="flex items-center space-x-2 p-2 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600"
+                >
+                  <div className="w-10 h-10 bg-neutral-500 rounded-full flex items-center justify-center text-lg ">
+                    {friend.displayName.charAt(0)}
+                  </div>
+                  <span>{friend.displayName}</span>
+                </Link>
+              </li>
+            ))}
+          {friends == null && <p>Loading...</p>}
+          {friends !== null && friends.length === 0 && (
+            <p>Man you must be really 𝓯𝓻𝓮𝓪𝓴𝔂 at parties</p>
+          )}
+        </ul>
       </div>
 
       {/* Settings Button */}

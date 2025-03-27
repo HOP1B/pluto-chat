@@ -80,7 +80,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
         // If nothing went wrong do set user and change path
         setUser(JSON.parse(res.data));
         if (FORBIDDENPATHS.includes(path)) {
-          router.push("/");
+          router.push("/chat");
         }
       })
       .catch(() => {

@@ -149,7 +149,7 @@ export const ChatBox = (props: ChatBoxProps) => {
       <ul className="flex-grow overflow-scroll scroll-smooth">
         {messages.map((message) => (
           <li key={message.id}>
-            <button onClick={() => {console.log(message)}}>click me</button>
+            {/* <button onClick={() => {console.log(message)}}>click me</button> */}
             <div className="flex flex-col">
               <div className="w-full text-xs">
                 {message.messenger.displayName}{" "}
