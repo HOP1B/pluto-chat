@@ -54,11 +54,11 @@ export const DELETE = async (
       OR: [
         {
           userId: user.id,
-          freindId: NOTfreind.id,
+          friendId: NOTfreind.id,
         },
         {
           userId: NOTfreind.id,
-          freindId: user.id,
+          friendId: user.id,
         },
       ],
     },

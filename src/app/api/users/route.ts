@@ -31,11 +31,13 @@ const prisma = new PrismaClient();
 export const GET = async () => {
   try {
     const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        username: true,
-        displayName: true,
-        friends: true,
+      omit: {
+        password: true,
+        email: true,
+        phone_number: true,
+      },
+      include: {
+        friendOf: true,
       },
     });
     return NextResponse.json(users, { status: 200 });

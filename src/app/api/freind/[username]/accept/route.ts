@@ -72,11 +72,11 @@ export const POST = async (
     data: [
       {
         userId: user.id,
-        freindId: freind.id,
+        friendId: freind.id,
       },
       {
         userId: freind.id,
-        freindId: user.id,
+        friendId: user.id,
       },
     ],
   });
