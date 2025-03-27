@@ -16,11 +16,20 @@ export const GET = async (req: NextRequest) => {
       id: user.id,
     },
     include: {
-      friendOf: true,
+      friends: {
+        include: {
+          friend: { omit: { password: true, email: true, phone_number: true } },
+        },
+      },
     },
   });
+
   if (!userWithFreinds)
     return NextResponse.json({ message: "User not found?" }, { status: 404 }); // ??
 
-  return NextResponse.json(userWithFreinds.friendOf);
+  const { friends } = userWithFreinds;
+
+  const PUREfriends = friends.map((item) => item.friend);
+
+  return NextResponse.json(PUREfriends);
 };
