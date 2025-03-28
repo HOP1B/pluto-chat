@@ -25,7 +25,7 @@ export const ChatMain = (props: Props_ChatMain) => {
         {/* <DialogTrigger asChild> */}
         <div className="flex items-center gap-2">
           <div className="flex gap-1 text-center text-sm">
-            <span className="opacity-75">@{user.username}</span>
+            <span className="opacity-75 text-[12px]">{user.username}</span>
             <span>{user.displayName}</span>
           </div>
           <button className="flex items-center space-x-2">

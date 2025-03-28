@@ -23,7 +23,7 @@ export default function Page() {
 
       <ChatMain channel={channel}></ChatMain>
 
-      <ChatInfo></ChatInfo>
+      <ChatInfo channel={channel}></ChatInfo>
     </div>
   );
 }

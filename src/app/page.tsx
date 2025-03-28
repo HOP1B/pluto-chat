@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 // import { TrippyBackground } from "./components/Common/TrippyBackground";
 
@@ -19,6 +20,7 @@ import Image from "next/image";
 // import { Menu,ChevronLeft,ChevronRight } from 'lucide-react';
 
 export default function Home() {
+  redirect('/chat')
   return (
     <div className="h-screen bg-neutral-900 text-white flex">
       {/* Sidebar */}

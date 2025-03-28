@@ -21,7 +21,6 @@ import { PFP } from "./PFP";
 
 export const ChatSideBar = () => {
   const { user, accessToken } = useContext(UserContext);
-  const [sentRequest, setSentRequest] = useState(false);
 
   const [friends, setFriends] = useState<User[] | null>(null);
   const { toast } = useToast();
@@ -63,37 +62,18 @@ export const ChatSideBar = () => {
               onSubmit={(e) => {
                 e.preventDefault();
                 const friend = (e.target as HTMLFormElement).friend.value;
-                console.log(sentRequest);
-                if (sentRequest) {
-                  axios
-                    .post(
-                      `/api/friend/${friend}/request`,
-                      {},
-                      { headers: { Authorization: `Bearer ${accessToken}` } }
-                    )
-                    .then((res) => {
-                      toast({ title: res.data.message });
-                      setSentRequest(true);
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      setSentRequest(false);
-                      toast({ title: err.response.data.message });
-                    });
-                } else {
-                  axios
-                    .delete(`/api/friend/${friend}/request/undo`, {
-                      headers: { Authorization: `Bearer ${accessToken}` },
-                    })
-                    .then((res) => {
-                      toast({ title: res.data.message });
-                      setSentRequest(false);
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                      toast({ title: err.response.data.message });
-                    });
-                }
+                axios
+                  .post(
+                    `/api/friend/${friend}/request`,
+                    {},
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                  )
+                  .then((res) => {
+                    toast({ title: res.data.message });
+                  })
+                  .catch((err) => {
+                    toast({ title: err.response.data.message });
+                  });
               }}
             >
               <Label>Your new future &apos;friend&apos;s username</Label>
@@ -105,7 +85,7 @@ export const ChatSideBar = () => {
                   className="text-neutral-300 border-[1.5px]"
                 />
                 <Button type="submit" variant="outline">
-                  {!sentRequest ? "Request" : "Undo"}
+                  Request
                 </Button>
               </div>
             </form>
@@ -146,7 +126,16 @@ export const ChatSideBar = () => {
       </div>
 
       {/* Settings Button */}
-      <button className="mt-4 p-2 bg-neutral-700 rounded hover:bg-neutral-600">
+      <button
+        className="mt-4 p-2 bg-neutral-700 rounded hover:bg-neutral-600"
+        onClick={() => {
+          toast({
+            title: "We had to cut the budget.",
+            description:
+              "We are starving. And we've got no time. Please don't kill us.",
+          });
+        }}
+      >
         Settings
       </button>
     </aside>
