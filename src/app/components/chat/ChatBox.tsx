@@ -150,8 +150,7 @@ export const ChatBox = (props: ChatBoxProps) => {
     <div className="flex flex-col px-3 pb-2 h-[95%]">
       <ul className="h-full overflow-scroll scroll-smooth">
         {messages.map((message, index) => (
-          <li key={message.id}>
-            {/* <button onClick={() => {console.log(message)}}>click me</button> */}
+          <li key={message.id} className="flex gap-2">
             <div className="flex flex-col">
               {(index === 0 ||
                 (index > 0 &&

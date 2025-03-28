@@ -50,7 +50,7 @@ export const ChatSideBar = () => {
               +
             </button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] bg-neutral-700/100 text-white border-white rounded-xl">
+          <DialogContent className="sm:max-w-[425px] bg-neutral-700/100 text-white border-neutral-600 rounded-xl">
             <DialogHeader>
               <DialogTitle>Add friend</DialogTitle>
               <DialogDescription>

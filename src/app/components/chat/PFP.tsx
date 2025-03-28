@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type props_PFP = {
   displayName: string;
@@ -7,13 +7,14 @@ type props_PFP = {
 
 export const PFP = (props: props_PFP) => {
   return (
-    <Image
-      src={`https://avatars.jakerunzer.com/${props.displayName}`}
-      alt={`PFP_${props.displayName}`}
-      width={props.size}
-      height={props.size}
-      style={{ width: `${props.size}px`, height: `${props.size}px` }}
-      className="rounded-full"
-    ></Image>
+    <Avatar style={{ width: `${props.size}px`, height: `${props.size}px` }}>
+      <AvatarImage
+        width={props.size}
+        height={props.size}
+        src={`https://avatars.jakerunzer.com/${props.displayName}`}
+        alt={`PFP_${props.displayName}`}
+      />
+      <AvatarFallback>{props.displayName.charAt(0)}</AvatarFallback>
+    </Avatar>
   );
 };
