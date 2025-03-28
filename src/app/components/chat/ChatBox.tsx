@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -97,18 +96,21 @@ export const ChatBox = (props: ChatBoxProps) => {
   // });
 
   const onSubmit = async (values: z.infer<typeof form_schema>) => {
+    const message = values.message.trim();
     form.reset();
-    await axios.post(
-      `/api/messages/${props.channel}`,
-      {
-        message: values.message,
-      },
-      {
-        headers: {
-          Authorization: "Bearer " + accessToken,
+    if (message) {
+      await axios.post(
+        `/api/messages/${props.channel}`,
+        {
+          message,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        }
+      );
+    }
   };
 
   useEffect(() => {
@@ -145,26 +147,41 @@ export const ChatBox = (props: ChatBoxProps) => {
   }, [messages]);
 
   return (
-    <div className="h-screen flex flex-col">
-      <ul className="flex-grow overflow-scroll scroll-smooth">
-        {messages.map((message) => (
+    <div className="flex flex-col px-3 pb-2 h-[95%]">
+      <ul className="h-full overflow-scroll scroll-smooth">
+        {messages.map((message, index) => (
           <li key={message.id}>
             {/* <button onClick={() => {console.log(message)}}>click me</button> */}
             <div className="flex flex-col">
-              <div className="w-full text-xs">
-                {message.messenger.displayName}{" "}
-                <span className="font-light">{message.messenger.username}</span>
-              </div>
-              <div className="w-full flex">
-                <div className="flex flex-grow flex-col">
-                  <div
-                    className="chat"
-                    dangerouslySetInnerHTML={{
-                      __html: md.render(message.message),
-                    }}
-                  ></div>
+              {(index === 0 ||
+                (index > 0 &&
+                  messages[index - 1].messenger === message.messenger) ||
+                new Date(messages[index - 1].createdAt).getTime() -
+                  new Date(message.createdAt).getTime() <=
+                  -60 * 1000) && (
+                <div className={`flex ${index == 0 ? "mt-1" : ""}`}>
+                  <div className="w-full flex-grow">
+                    <span className="text-xs mr-1">
+                      {message.messenger.displayName}
+                    </span>
+                    <span className="text-[10px] opacity-75">
+                      {message.messenger.username}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs whitespace-nowrap">
+                      {dayjs().from(message.createdAt)}
+                    </span>
+                  </div>
                 </div>
-                <span>{dayjs().from(message.createdAt)}</span>
+              )}
+              <div className="w-full flex">
+                <div
+                  className="chat"
+                  dangerouslySetInnerHTML={{
+                    __html: md.render(message.message),
+                  }}
+                ></div>
               </div>
             </div>
           </li>
@@ -181,6 +198,7 @@ export const ChatBox = (props: ChatBoxProps) => {
                 <FormLabel>Message</FormLabel>
                 <FormControl>
                   <Textarea
+                    autoFocus
                     onKeyDown={(e) => {
                       const isShiftKey = e.key === "Shift";
                       if (isShiftKey) {
@@ -204,7 +222,7 @@ export const ChatBox = (props: ChatBoxProps) => {
               </FormItem>
             )}
           ></FormField>
-          <Button type="submit">Send</Button>
+          {/* <Button type="submit">Send</Button> */}
         </form>
       </Form>
     </div>

@@ -188,7 +188,7 @@ ol {
 }
 
 .chat tbody tr td {
-  background-color: #f9f9f9;
+  border-top: 1px solid #aaa;
 }
 
 .chat hr {
