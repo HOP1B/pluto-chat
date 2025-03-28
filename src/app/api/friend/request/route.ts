@@ -7,20 +7,20 @@ export const GET = async (req: NextRequest) => {
   const userHeader = req.headers.get("_user");
   if (!userHeader)
     return NextResponse.json(
-      { message: "gng just kill me 💔" },
+      { message: "I don't have the time to write an error message." },
       { status: 500 }
     );
   const user: User = JSON.parse(userHeader);
-  const userWithFreinds = await prisma.user.findFirst({
+  const recievedRequests = await prisma.freindRequest.findMany({
     where: {
-      id: user.id,
+      recieverId: user.id,
     },
     include: {
-      friendOf: true,
+      sender: {
+        omit: { password: true, email: true, phone_number: true },
+      },
     },
   });
-  if (!userWithFreinds)
-    return NextResponse.json({ message: "User not found?" }, { status: 404 }); // ??
-
-  return NextResponse.json(userWithFreinds.friendOf);
+  const sentUsers = recievedRequests.map((e) => e.sender);
+  return NextResponse.json(sentUsers);
 };
