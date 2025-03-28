@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { PFP } from "./PFP";
 
 export const ChatSideBar = () => {
   const { user, accessToken } = useContext(UserContext);
@@ -113,16 +114,14 @@ export const ChatSideBar = () => {
       </div>
       {/* Contact List */}
       <div className="flex-1 overflow-y-auto space-y-2">
-        <ul>
+        <ul className="flex flex-col gap-3">
           <li key={"oh hey its you"}>
             <Link
               href={`/chat`}
               className="flex items-center space-x-2 p-2 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600"
             >
-              <div className="w-10 h-10 bg-neutral-500 rounded-full flex items-center justify-center text-lg ">
-                {user.displayName.charAt(0)}
-              </div>
-              <span>{user.displayName}</span>
+              <PFP size={40} displayName={user.displayName} />
+              <span>It&apos;s you</span>
               {/* Despite everything, it's still you. */}
             </Link>
           </li>
@@ -134,9 +133,7 @@ export const ChatSideBar = () => {
                   href={`/chat/${friend.id}~${user.id}`}
                   className="flex items-center space-x-2 p-2 bg-neutral-700 rounded cursor-pointer hover:bg-neutral-600"
                 >
-                  <div className="w-10 h-10 bg-neutral-500 rounded-full flex items-center justify-center text-lg ">
-                    {friend.displayName.charAt(0)}
-                  </div>
+                  <PFP displayName={friend.displayName} size={40} />
                   <span>{friend.displayName}</span>
                 </Link>
               </li>

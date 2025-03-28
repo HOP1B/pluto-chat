@@ -1,7 +1,7 @@
 import { UserContext } from "@/app/context/user-context";
-import Image from "next/image";
 import { useContext } from "react";
 import { Chat } from "./Chat";
+import { PFP } from "./PFP";
 
 type Props_ChatMain = {
   channel?: string;
@@ -29,13 +29,7 @@ export const ChatMain = (props: Props_ChatMain) => {
             <span>{user.displayName}</span>
           </div>
           <button className="flex items-center space-x-2">
-            <Image
-              width={32}
-              height={32}
-              src={`https://avatars.jakerunzer.com/${user.username}`}
-              className="w-8 h-8 rounded-full"
-              alt="PFP"
-            />
+            <PFP displayName={user.displayName} size={32} />
             {/* <span className="font-semibold">...</span> */}
           </button>
         </div>
@@ -49,7 +43,11 @@ export const ChatMain = (props: Props_ChatMain) => {
           </div> */}
       </header>
 
-      {props.channel ? <Chat channel={props.channel}></Chat> : <></>}
+      {props.channel ? (
+        <Chat channel={props.channel}></Chat>
+      ) : (
+        <p>what am i supposed to put here</p>
+      )}
     </main>
   );
 };
