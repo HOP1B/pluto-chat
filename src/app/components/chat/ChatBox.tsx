@@ -45,7 +45,7 @@ const md = markdownit({
           hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
           "</code></pre>"
         );
-      } catch {}
+      } catch { }
     }
 
     return "";
@@ -150,30 +150,30 @@ export const ChatBox = (props: ChatBoxProps) => {
     <div className="flex flex-col px-3 pb-2 h-[95%]">
       <ul className="h-full overflow-scroll scroll-smooth">
         {messages.map((message, index) => (
-          <li key={message.id} className="flex gap-2">
-            <div className="flex flex-col">
+          <li key={message.id} className="flex gap-2 w-full">
+            <div className="flex flex-col w-full">
               {(index === 0 ||
                 (index > 0 &&
                   messages[index - 1].messenger === message.messenger) ||
                 new Date(messages[index - 1].createdAt).getTime() -
-                  new Date(message.createdAt).getTime() <=
-                  -60 * 1000) && (
-                <div className={`flex ${index == 0 ? "mt-1" : ""}`}>
-                  <div className="w-full flex-grow">
-                    <span className="text-xs mr-1">
-                      {message.messenger.displayName}
-                    </span>
-                    <span className="text-[10px] opacity-75">
-                      {message.messenger.username}
-                    </span>
+                new Date(message.createdAt).getTime() <=
+                -60 * 1000) && (
+                  <div className={`flex ${index == 0 ? "mt-1" : ""}`}>
+                    <div className="w-full flex-grow flex items-center">
+                      <span className="text-xs mr-1">
+                        {message.messenger.displayName}
+                      </span>
+                      <span className="text-[10px] opacity-75">
+                        {message.messenger.username}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-xs whitespace-nowrap">
+                        {dayjs().from(message.createdAt)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <span className="text-xs whitespace-nowrap">
-                      {dayjs().from(message.createdAt)}
-                    </span>
-                  </div>
-                </div>
-              )}
+                )}
               <div className="w-full flex">
                 <div
                   className="chat"
