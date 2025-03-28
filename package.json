@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "prebuild":"prisma generate",
     "prepare": "husky"
   },
   "config": {
